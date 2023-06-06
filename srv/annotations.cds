@@ -1,32 +1,30 @@
-using riskmanagement as rm from '../db/schema';
+using  from './risk-service';
 
  // Annotate Risk elements
- annotate rm.Risks with {
-   ID @title : 'Risk';
-   title @title : 'Title';
-   owner @title : 'Owner';
+ annotate RiskService.Risks with {
+    ID @title : '{i18n>risk}';
+   title @title : '{i18n>Title}';
+   owner @title : '{i18n>Owner}';
    prio @title : 'Priority';
    descr @title : 'Description';
    miti @title : 'Mitigation';
    impact @title : 'Impact';
-   //### BEGIN OF INSERT
-   bp @title : 'Business Partner';
-   //### END OF INSERT
+   bp @title : '{i18n>businessPartner}';
    criticality @title : 'Criticality';
  }
 
  // Annotate Miti elements
- annotate rm.Mitigations with {
+ annotate RiskService.Mitigations with {
    ID @(
      UI.Hidden,
      Common : {Text : descr}
    );
-   owner @title : 'Owner';
+   owner @title : 'Mitigation Owner';
    descr @title : 'Description';
  }
 
  //### BEGIN OF INSERT
- annotate rm.BusinessPartners with {
+ annotate RiskService.BusinessPartners with {
    BusinessPartner @(
      UI.Hidden,
      Common : {Text : LastName}
@@ -36,7 +34,7 @@ using riskmanagement as rm from '../db/schema';
  }
  //### END OF INSERT
 
-annotate rm.Risks with {
+annotate RiskService.Risks with {
    miti @(Common : {
      //show text, not id for mitigation in the context of risks
      Text : miti.descr,
@@ -68,7 +66,7 @@ annotate rm.Risks with {
          {
            $Type : 'Common.ValueListParameterInOut',
            LocalDataProperty : bp_BusinessPartner,
-           ValueListProperty : 'bp_BusinessPartner'
+           ValueListProperty : 'FirstName'
          },
          {
             $Type : 'Common.ValueListParameterDisplayOnly',

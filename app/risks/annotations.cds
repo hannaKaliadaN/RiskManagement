@@ -20,6 +20,7 @@ using RiskService from '../../srv/risk-service';
    LineItem : [
    {Value : title},
      {Value : miti_ID},
+      {Value : miti.owner},
      {Value : owner},
      //### BEGIN OF INSERT
      {Value : bp_BusinessPartner},
