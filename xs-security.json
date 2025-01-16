@@ -1,8 +1,11 @@
-
 {
   "xsappname": "risk-management",
   "tenant-mode": "dedicated",
   "scopes": [
+    {
+      "name": "uaa.user",
+      "description": "UAA"
+    },
     {
       "name": "$XSAPPNAME.RiskViewer",
       "description": "RiskViewer"
@@ -10,10 +13,21 @@
     {
       "name": "$XSAPPNAME.RiskManager",
       "description": "RiskManager"
+    },
+    {
+      "name": "$XSAPPNAME.DataRetentionManager",
+      "description": "Authority for Data Retention Manager",
+      "grant-as-authority-to-apps": ["$XSSERVICENAME(retention-manager)", "sb-risk-management-dev!b168579|retention-manager-service!b612", "$XSAPPNAME(retention-manager)"]
     }
+
   ],
   "attributes": [],
   "role-templates": [
+    {
+      "name": "Token_Exchange",
+      "description": "UAA",
+      "scope-references": ["uaa.user"]
+    },
     {
       "name": "RiskViewer",
       "description": "generated",
@@ -27,10 +41,9 @@
       "description": "generated",
       "scope-references": [
         "$XSAPPNAME.RiskManager"
-       ],
+      ],
       "attribute-references": []
     }
-
   ],
   "oauth2-configuration": {
     "redirect-uris": [

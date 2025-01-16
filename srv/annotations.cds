@@ -24,14 +24,7 @@ using  from './risk-service';
  }
 
  //### BEGIN OF INSERT
- annotate RiskService.BusinessPartners with {
-   BusinessPartner @(
-     UI.Hidden,
-     Common : {Text : LastName}
-   );
-   LastName @title : 'Last Name';
-   FirstName @title : 'First Name';
- }
+
  //### END OF INSERT
 
 annotate RiskService.Risks with {
@@ -56,28 +49,6 @@ annotate RiskService.Risks with {
    }
  });
  //### BEGIN OF INSERT
- bp @(Common : {
-   Text : bp.LastName,
-   TextArrangement : #TextOnly,
-   ValueList : {
-      Label : 'Business Partners',
-      CollectionPath : 'BusinessPartners',
-      Parameters : [
-         {
-           $Type : 'Common.ValueListParameterInOut',
-           LocalDataProperty : bp_BusinessPartner,
-           ValueListProperty : 'FirstName'
-         },
-         {
-            $Type : 'Common.ValueListParameterDisplayOnly',
-            ValueListProperty : 'LastName'
-          },
-          {
-             $Type : 'Common.ValueListParameterDisplayOnly',
-             ValueListProperty : 'FirstName'
-          }
-       ]
-     }
-  })
+
 //### END OF INSERT 
 }

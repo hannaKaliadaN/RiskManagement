@@ -24,6 +24,7 @@ modules:
     requires:
       - name: risk-management-db
       - name: risk-management-auth
+      - name: retention-manager-service
 
   - name: risk-management-db-deployer
     type: hdb
@@ -59,9 +60,48 @@ resources:
     type: org.cloudfoundry.managed-service
     parameters:
       service: xsuaa
-      service-plan: application
+      service-plan: broker
       path: ./xs-security.json
       config:
         xsappname: risk-management-${space}
         tenant-mode: dedicated
-     
+  - name: retention-manager-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: retention-manager
+      service-name: retention-manager
+      service-plan: free 
+      config:
+        xs-security:
+          authorities:
+            - $ACCEPT_GRANTED_AUTHORITIES
+            - $XSAPPNAME.DataRetentionManager
+          xsappname: risk-management-${space}
+        retention-configs:
+          applicationGroupBaseURL: https://anna-kaliada-us-east-va-q1fgjfxl-dev-risk-management-srv.cfapps.us10-001.hana.ondemand.com
+          applicationGroupDescription: risk-management
+          applicationGroupName: risk-management
+          dataSubjects:
+            - dataSubjectBaseURL: https://anna-kaliada-us-east-va-q1fgjfxl-dev-risk-management-srv.cfapps.us10-001.hana.ondemand.com
+              dataSubjectDeletionEndPoint: /dpp/deleteDataSubject
+              dataSubjectDescription: BusinessPartner
+              dataSubjectRole: BusinessPartner
+              legalEntity:
+                legalEntity: BusinessPartner
+                legalEntityDescription: Sold To Party
+                legalEntityValueHelpEndPoint: /dpp/legalEntities
+              legalGrounds:
+                - dataSubjectEndofBusinessEndPoint: /dpp/dataSubjectEndOfBusiness
+                  dataSubjectLastRetentionStartDatesEndPoint: /dpp/dataSubjectRetentionStartDate
+                  dataSubjectLegalEntitiesEndPoint: /dpp/dataSubjectLegalEntities
+                  dataSubjectLegalGroundDeletionEndPoint: /dpp/deleteLegalGroundInstances
+                  dataSubjectsEndofResidenceConfirmationEndPoint: /dpp/endofResidenceDSConfirmation
+                  dataSubjectsEndofResidenceEndPoint: /dpp/dataSubjectsEndofResidence
+                  legalGround: ManageSales
+                  legalGroundBaseURL: https://anna-kaliada-us-east-va-q1fgjfxl-dev-risk-management-srv.cfapps.us10-001.hana.ondemand.com
+                  legalGroundDescription: Manage Sales
+                  startTimes:
+                  - startTime: createdAt
+                    startTimeDescription: CreatedAt date
+        
+        
