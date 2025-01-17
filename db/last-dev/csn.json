@@ -1,5 +1,5 @@
 {
-  "namespace": "riskmanagement",
+  "namespace": "sap.capire.incidents",
   "definitions": {},
   "meta": {
     "creator": "CDS Compiler v4.9.8",

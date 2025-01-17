@@ -6,41 +6,38 @@
       "name": "uaa.user",
       "description": "UAA"
     },
+   
     {
-      "name": "$XSAPPNAME.RiskViewer",
-      "description": "RiskViewer"
+      "name": "$XSAPPNAME.support",
+      "description": "support"
     },
     {
-      "name": "$XSAPPNAME.RiskManager",
-      "description": "RiskManager"
-    },
-    {
-      "name": "$XSAPPNAME.DataRetentionManager",
-      "description": "Authority for Data Retention Manager",
-      "grant-as-authority-to-apps": ["$XSSERVICENAME(retention-manager)", "sb-risk-management-dev!b168579|retention-manager-service!b612", "$XSAPPNAME(retention-manager)"]
+      "name": "$XSAPPNAME.admin",
+      "description": "admin"
     }
-
   ],
   "attributes": [],
   "role-templates": [
     {
       "name": "Token_Exchange",
       "description": "UAA",
-      "scope-references": ["uaa.user"]
+      "scope-references": [
+        "uaa.user"
+      ]
     },
     {
-      "name": "RiskViewer",
+      "name": "admin",
       "description": "generated",
       "scope-references": [
-        "$XSAPPNAME.RiskViewer"
+        "$XSAPPNAME.admin"
       ],
       "attribute-references": []
     },
     {
-      "name": "RiskManager",
+      "name": "admin",
       "description": "generated",
       "scope-references": [
-        "$XSAPPNAME.RiskManager"
+        "$XSAPPNAME.admin"
       ],
       "attribute-references": []
     }

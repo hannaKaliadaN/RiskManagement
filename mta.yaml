@@ -25,6 +25,7 @@ modules:
       - name: risk-management-db
       - name: risk-management-auth
       - name: retention-manager-service
+      - name: risk-management-destination
 
   - name: risk-management-db-deployer
     type: hdb
@@ -49,6 +50,7 @@ modules:
           url: ~{srv-url}
           forwardAuthToken: true
       - name: risk-management-auth
+      - name: risk-management-destination
 
 resources:
   - name: risk-management-db
@@ -60,7 +62,7 @@ resources:
     type: org.cloudfoundry.managed-service
     parameters:
       service: xsuaa
-      service-plan: broker
+      service-plan: application
       path: ./xs-security.json
       config:
         xsappname: risk-management-${space}
@@ -70,12 +72,11 @@ resources:
     parameters:
       service: retention-manager
       service-name: retention-manager
-      service-plan: free 
+      service-plan: standard
       config:
         xs-security:
           authorities:
             - $ACCEPT_GRANTED_AUTHORITIES
-            - $XSAPPNAME.DataRetentionManager
           xsappname: risk-management-${space}
         retention-configs:
           applicationGroupBaseURL: https://anna-kaliada-us-east-va-q1fgjfxl-dev-risk-management-srv.cfapps.us10-001.hana.ondemand.com
@@ -101,7 +102,10 @@ resources:
                   legalGroundBaseURL: https://anna-kaliada-us-east-va-q1fgjfxl-dev-risk-management-srv.cfapps.us10-001.hana.ondemand.com
                   legalGroundDescription: Manage Sales
                   startTimes:
-                  - startTime: createdAt
-                    startTimeDescription: CreatedAt date
-        
-        
+                    - startTime: createdAt
+                      startTimeDescription: CreatedAt date
+  - name: risk-management-destination
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite

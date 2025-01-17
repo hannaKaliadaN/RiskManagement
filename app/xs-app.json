@@ -1,6 +1,5 @@
-
 {
-  "welcomeFile": "/app/risks/webapp/index.html",
+  "welcomeFile": "/app/incidents/webapp/index.html",
   "routes": [
     {
       "source": "^/app/(.*)$",
