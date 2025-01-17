@@ -1,6 +1,6 @@
 {
   "xsappname": "risk-management",
-  "tenant-mode": "dedicated",
+  "tenant-mode": "shared",
   "scopes": [
     {
       "name": "uaa.user",
@@ -17,16 +17,33 @@
     {
       "name": "$XSAPPNAME.DataRetentionManager",
       "description": "Authority for Data Retention Manager",
-      "grant-as-authority-to-apps": ["$XSSERVICENAME(retention-manager)", "sb-risk-management-dev!b168579|retention-manager-service!b612", "$XSAPPNAME(retention-manager)"]
+      "grant-as-authority-to-apps": [
+        "$XSSERVICENAME(retention-manager)"
+      ]
+    },
+    {
+      "name": "$XSAPPNAME.PersonalDataManagerUser",
+      "description": "Authority for Personal Data Manager",
+      "grant-as-authority-to-apps": [
+        "$XSSERVICENAME(personal-data-manager-service)"
+      ]
+    },
+    {
+      "name": "$XSAPPNAME.DataPrivacyTechnicalUser",
+      "description": "SAP Data Privacy Integration service Scope",
+      "grant-as-authority-to-apps": [
+        "$XSSERVICENAME(data-privacy-integration-service)"
+      ]
     }
-
   ],
   "attributes": [],
   "role-templates": [
     {
       "name": "Token_Exchange",
       "description": "UAA",
-      "scope-references": ["uaa.user"]
+      "scope-references": [
+        "uaa.user"
+      ]
     },
     {
       "name": "RiskViewer",

@@ -23,7 +23,7 @@ using RiskService from '../../srv/risk-service';
       {Value : miti.owner},
      {Value : owner},
      //### BEGIN OF INSERT
-     {Value : bp_BusinessPartner},
+ 
      //### END OF INSERT
      {
        Value : prio,
@@ -47,7 +47,7 @@ using RiskService from '../../srv/risk-service';
      {Value : miti_ID},
      {Value : owner},
      //### BEGIN OF INSERT
-     {Value : bp_BusinessPartner},
+   
      //### END OF INSERT
      {
        Value : prio,

@@ -3,7 +3,9 @@ ID: risk-management
 version: 2.0.0
 description: "Template for the Learning Journey Building side-by-side extensions on SAP BTP"
 parameters:
-  enable-parallel-deployments: true
+  enable-parallel-deployments: false
+  pdm-app-name: risk-management-${space}
+  url: https://anna-kaliada-us-east-va-q1fgjfxl-dev-risk-management-srv.cfapps.us10-001.hana.ondemand.com
 build-parameters:
   before-all:
     - builder: custom
@@ -25,6 +27,21 @@ modules:
       - name: risk-management-db
       - name: risk-management-auth
       - name: retention-manager-service
+      - name: data-privacy-integration-service
+      - name: personal-data-manager-service
+        parameters:
+          config:
+            fullyQualifiedApplicationName: ${pdm-app-name}
+            fullyQualifiedModuleName: ${pdm-app-name}
+            applicationTitle: ${pdm-app-name}
+            applicationURL: ${url}
+            endPoints:
+              - type: odataV4
+                serviceName: PDMService
+                serviceTitle: PDMService
+                serviceTitleKey: PDMServiceTitle
+                serviceURI: /pdm
+                hasGdprV4Annotations: true
 
   - name: risk-management-db-deployer
     type: hdb
@@ -64,44 +81,78 @@ resources:
       path: ./xs-security.json
       config:
         xsappname: risk-management-${space}
-        tenant-mode: dedicated
   - name: retention-manager-service
     type: org.cloudfoundry.managed-service
     parameters:
       service: retention-manager
       service-name: retention-manager
-      service-plan: free 
+      service-plan: free
       config:
         xs-security:
           authorities:
             - $ACCEPT_GRANTED_AUTHORITIES
-            - $XSAPPNAME.DataRetentionManager
           xsappname: risk-management-${space}
         retention-configs:
-          applicationGroupBaseURL: https://anna-kaliada-us-east-va-q1fgjfxl-dev-risk-management-srv.cfapps.us10-001.hana.ondemand.com
+          applicationGroupBaseURL: ${url}
           applicationGroupDescription: risk-management
-          applicationGroupName: risk-management
+          applicationGroupName: risk-management-${space}
           dataSubjects:
-            - dataSubjectBaseURL: https://anna-kaliada-us-east-va-q1fgjfxl-dev-risk-management-srv.cfapps.us10-001.hana.ondemand.com
-              dataSubjectDeletionEndPoint: /dpp/deleteDataSubject
-              dataSubjectDescription: BusinessPartner
-              dataSubjectRole: BusinessPartner
+            - dataSubjectBaseURL: ${url}
+              dataSubjectDeletionEndPoint: /drm/deleteDataSubject
+              dataSubjectDescription: Customers
+              dataSubjectRole: Customer
               legalEntity:
-                legalEntity: BusinessPartner
+                legalEntity: Customer
                 legalEntityDescription: Sold To Party
-                legalEntityValueHelpEndPoint: /dpp/legalEntities
+                legalEntityValueHelpEndPoint: /drm/legalEntities
               legalGrounds:
-                - dataSubjectEndofBusinessEndPoint: /dpp/dataSubjectEndOfBusiness
-                  dataSubjectLastRetentionStartDatesEndPoint: /dpp/dataSubjectRetentionStartDate
-                  dataSubjectLegalEntitiesEndPoint: /dpp/dataSubjectLegalEntities
-                  dataSubjectLegalGroundDeletionEndPoint: /dpp/deleteLegalGroundInstances
-                  dataSubjectsEndofResidenceConfirmationEndPoint: /dpp/endofResidenceDSConfirmation
-                  dataSubjectsEndofResidenceEndPoint: /dpp/dataSubjectsEndofResidence
+                - dataSubjectEndofBusinessEndPoint: /drm/dataSubjectEndOfBusiness
+                  dataSubjectLastRetentionStartDatesEndPoint: /drm/dataSubjectRetentionStartDate
+                  dataSubjectLegalEntitiesEndPoint: /drm/dataSubjectLegalEntities
+                  dataSubjectLegalGroundDeletionEndPoint: /drm/deleteLegalGroundInstances
+                  dataSubjectsEndofResidenceConfirmationEndPoint: /drm/endofResidenceDSConfirmation
+                  dataSubjectsEndofResidenceEndPoint: /drm/dataSubjectsEndofResidence
                   legalGround: ManageSales
-                  legalGroundBaseURL: https://anna-kaliada-us-east-va-q1fgjfxl-dev-risk-management-srv.cfapps.us10-001.hana.ondemand.com
+                  legalGroundBaseURL: ${url}
                   legalGroundDescription: Manage Sales
                   startTimes:
-                  - startTime: createdAt
-                    startTimeDescription: CreatedAt date
-        
-        
+                    - startTime: createdAt
+                      startTimeDescription: CreatedAt date
+  - name: personal-data-manager-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: personal-data-manager-service
+      service-plan: standard
+      config:
+        xs-security:
+          xsappname: risk-management-${space}
+          authorities:
+            - $ACCEPT_GRANTED_AUTHORITIES
+        fullyQualifiedApplicationName: risk-management-${space}
+  - name: data-privacy-integration-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: data-privacy-integration-service
+      service-plan: application
+      config:
+        xs-security:
+          xsappname: risk-management-${space}
+          authorities:
+            - $ACCEPT_GRANTED_AUTHORITIES
+        dppConfig:
+          applicationName: risk-management-${space}
+          applicationHost: ${url}
+          information:
+            applicationTitle: risk-management-${space}
+            modules:
+              - fullyQualifiedModuleName: risk-management-${space}
+                applicationURL: ${url}
+                endPoints:
+                  - type: odataV4
+                    serviceName: PDMService
+                    serviceTitle: PDMService
+                    serviceTitleKey: PDMServiceTitle
+                    serviceURI: /pdm
+                    hasGdprV4Annotations: true
+         
+
